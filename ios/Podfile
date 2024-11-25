@@ -1,11 +1,12 @@
-# Resolve react_native_pods.rb with node to allow for hoisting
+# React Native Podfile
 require Pod::Executable.execute_command('node', ['-p',
   'require.resolve(
     "react-native/scripts/react_native_pods.rb",
     {paths: [process.argv[1]]},
   )', __dir__]).strip
 
-platform :ios, min_ios_version_supported
+platform :ios, '11.0' # Change this to your minimum iOS version
+
 prepare_react_native_project!
 
 linkage = ENV['USE_FRAMEWORKS']
@@ -19,9 +20,14 @@ target 'LuxApp' do
 
   use_react_native!(
     :path => config[:reactNativePath],
-    # An absolute path to your application root.
     :app_path => "#{Pod::Config.instance.installation_root}/.."
   )
+
+  # Ensure fonts from react-native-vector-icons are linked correctly
+  pod 'RNVectorIcons', :path => '../node_modules/react-native-vector-icons'
+
+  # Additional dependencies for your project
+  # pod 'react-native-<some-package>', :path => '../node_modules/react-native-<some-package>'
 
   target 'LuxAppTests' do
     inherit! :complete
@@ -29,12 +35,19 @@ target 'LuxApp' do
   end
 
   post_install do |installer|
-    # https://github.com/facebook/react-native/blob/main/packages/react-native/scripts/react_native_pods.rb#L197-L202
     react_native_post_install(
       installer,
       config[:reactNativePath],
-      :mac_catalyst_enabled => false,
-      # :ccache_enabled => true
+      :mac_catalyst_enabled => false
     )
+
+    # Workaround for an issue where some pods don't get properly linked
+    installer.pods_project.targets.each do |target|
+      if target.name == 'react-native-vector-icons'
+        target.resources_build_phase.files.each do |file|
+          file.remove_from_build_phase if file.display_name.include?(".ttf")
+        end
+      end
+    end
   end
 end

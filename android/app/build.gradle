@@ -1,6 +1,8 @@
 apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
+// Add this line to link fonts
+apply from: "../../node_modules/react-native-vector-icons/fonts.gradle"
 
 /**
  * This is the configuration block to customize your React Native Android app.
@@ -72,6 +74,7 @@ def enableProguardInReleaseBuilds = false
  */
 def jscFlavor = 'org.webkit:android-jsc:+'
 
+
 android {
     ndkVersion rootProject.ext.ndkVersion
     buildToolsVersion rootProject.ext.buildToolsVersion
@@ -85,6 +88,8 @@ android {
         versionCode 1
         versionName "1.0"
     }
+
+    // Signing configuration for release builds
     signingConfigs {
         debug {
             storeFile file('debug.keystore')
@@ -92,15 +97,20 @@ android {
             keyAlias 'androiddebugkey'
             keyPassword 'android'
         }
+        release {
+            storeFile file("C:/Users/user/Desktop/LuxApp/LuxApp/android/app/luxa-release-key.jks") // Replace with the correct path
+            storePassword "LuxApp" // Replace with your actual keystore password
+            keyAlias "luxa-key-alias" // Replace with your key alias
+            keyPassword "LuxApp" // Replace with your key password
+        }
     }
+
     buildTypes {
         debug {
             signingConfig signingConfigs.debug
         }
         release {
-            // Caution! In production, you need to generate your own keystore file.
-            // see https://reactnative.dev/docs/signed-apk-android.
-            signingConfig signingConfigs.debug
+            signingConfig signingConfigs.release
             minifyEnabled enableProguardInReleaseBuilds
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
