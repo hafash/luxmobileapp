@@ -1,14 +1,6 @@
 import {useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {
-  Alert,
-  Image,
-  ScrollView,
-  Text,
-  TextInput,
-  TouchableOpacity,
-  View,
-} from 'react-native';
+import {Alert, Text, TextInput, TouchableOpacity, View} from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {colors} from '../../components/colors';
@@ -121,23 +113,19 @@ export const NewInquiryScreen = () => {
   return (
     <View style={styles.newInquiryContainer}>
       <View style={styles.headerContainer}>
-        <View style={styles.logoContainer}>
-          <Image
-            source={require('../../assets/images/2logo.png')}
-            style={{width: isPortrait ? 100 : 80, height: isPortrait ? 50 : 40}}
-          />
-          <Text style={styles.title}>New Inquiry</Text>
-        </View>
-        <TouchableOpacity
+        <Text style={styles.title}>New Inquiry</Text>
+      </View>
+
+      {/* <TouchableOpacity
           style={{padding: 10}}
           onPress={() => {
             navigation.navigate('SearchPro');
           }}>
           <FontAwesome5 name="search" size={21} color="#1c368a" />
         </TouchableOpacity>
-      </View>
+      */}
 
-      <ScrollView contentContainerStyle={{flexGrow: 1}}>
+      <View>
         <View style={styles.form}>
           <RNPickerSelect
             onValueChange={(value: string | null) => setCountry(value)}
@@ -248,13 +236,12 @@ export const NewInquiryScreen = () => {
               <FontAwesome5 name="paperclip" size={20} color="#4a4545" />
               <Text style={styles.attachmentButtonText}>Attach File</Text>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
+              <Text style={styles.sendButtonText}>Send</Text>
+            </TouchableOpacity>
           </View>
-
-          <TouchableOpacity style={styles.sendButton} onPress={handleSend}>
-            <Text style={styles.sendButtonText}>Send</Text>
-          </TouchableOpacity>
         </View>
-      </ScrollView>
+      </View>
 
       <View style={styles.bottomNav}>
         <TouchableOpacity onPress={() => navigation.navigate('messages')}>

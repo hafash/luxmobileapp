@@ -46,7 +46,7 @@ const PaymentModal: React.FC<PaymentModalProps> = ({visible, onClose}) => {
         cardType) ||
       (paymentMethod === 'mobile' && phoneNumber !== '')
     ) {
-      navigation.navigate('AddProduct');
+      navigation.navigate('Buyer_Landing_Page');
     }
   };
 

@@ -1,10 +1,35 @@
-// types.ts
-export interface PaymentModalProps {
-  visible: boolean;
-  onClose: () => void;
-}
-
 export type RootStackParamList = {
-  PaymentModal: PaymentModalProps; // Payment modal requires specific props
-  // Add other screens as needed
+  Home: undefined;
+  SellerRegister: undefined;
+  BuyerRegister: undefined;
+  Login: undefined;
+  Inquiry: undefined;
+  Buyer_Messages: undefined;
+  chat: undefined;
+  products: undefined;
+  Inquirers: undefined;
+  messages: undefined;
+  Buyer_Landing_Page: undefined;
+  advertised: undefined;
+  BuyerSubscription: undefined;
+  Subscription2: undefined;
+  Subscription3: undefined;
+  SellerSubscription: undefined;
+  SubscriptionB2: undefined;
+  SubscriptionB3: undefined;
+  Seller_Landing_Page: undefined;
+  AdminDashboard: undefined;
+  Post_Your_Product: undefined;
+  SellerPaymentMethod: {visible: boolean; onClose: () => void};
+  BuyerPayment: {visible: boolean; onClose: () => void};
+  CodeConfirmation: undefined;
+  PaymentModal: {visible: boolean; onClose: () => void};
+  TermsAndCondition: undefined;
+  UserProfile: undefined;
+  Settings: undefined;
+  ReceivedInquiryList: undefined;
+  ForgotPassword: undefined;
+  UserTypeSelectionModal: undefined;
+  CodeConfirmationForSeller: undefined;
+  CreatePassword: undefined;
 };

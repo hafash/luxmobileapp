@@ -3,7 +3,6 @@ import React, {useEffect, useState} from 'react';
 import {
   Alert,
   Dimensions,
-  Image,
   ScrollView,
   StyleSheet,
   Text,
@@ -114,7 +113,7 @@ const SellerRegister = () => {
       width: dimensions.width * 0.85,
       justifyContent: 'flex-start', // Keeps the content aligned from the top
       padding: dimensions.width * 0.05,
-      marginTop: dimensions.height * 0.04, // Moves the form 40% down from the top
+      marginTop: dimensions.height * 0.02, // Moves the form 40% down from the top
       marginBottom: dimensions.height * 0.1,
     },
 
@@ -148,33 +147,33 @@ const SellerRegister = () => {
       resizeMode: 'contain', // Ensures the logo scales well
       alignSelf: 'center', // Center the logo horizontally
     },
-    // roleButton_Signupform: {
-    //   backgroundColor: colors.lightBlue,
-    //   padding: 2,
-    //   borderRadius: 5,
-    //   alignItems: 'center',
+    roleButton_Signupform: {
+      backgroundColor: colors.lightBlue,
+      padding: 2,
+      borderRadius: 5,
+      alignItems: 'center',
 
-    //   fontSize: 38,
-    // },
-    // headerContainer_Signupform: {
-    //   flexDirection: 'row',
-    //   alignItems: 'center',
-    //   // justifyContent: 'center',
-    //   justifyContent: 'space-between',
-    //   marginTop: dimensions.height * 0.00009,
-    // },
-    // title_Signupform: {
-    //   fontSize: 20,
-    //   fontWeight: 'bold',
-    //   color: colors.white,
-    //   textAlign: 'center',
+      fontSize: 38,
+    },
+    headerContainer_Signupform: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      // justifyContent: 'center',
+      justifyContent: 'space-between',
+      marginTop: dimensions.height * 0.00009,
+    },
+    title_Signupform: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: colors.white,
+      textAlign: 'center',
 
-    //   // marginLeft: isPortrait ? 20 : 40,
-    // },
-    // roleText_Signupform: {
-    //   fontSize: 15, // Slightly reduced font size for compactness
-    //   color: colors.white,
-    // },
+      // marginLeft: isPortrait ? 20 : 40,
+    },
+    roleText_Signupform: {
+      fontSize: 15, // Slightly reduced font size for compactness
+      color: colors.white,
+    },
   });
 
   const updateField = (field: string, value: any) =>
@@ -241,23 +240,6 @@ const SellerRegister = () => {
 
   const Content = (
     <View style={styles.container_Signupform}>
-      {/* Add the logo at the top */}
-      {/* <Image
-        source={require('../../assets/images/LuxLogo.png')}
-        style={styles.logo}
-      /> */}
-
-      {/* <View style={styles.headerContainer_Signupform}>
-        <Text style={styles.title_Signupform}>REGISTER</Text>
-
-        <TouchableOpacity
-          style={styles.roleButton_Signupform}
-          onPress={() => {
-            console.log('Role button pressed');
-          }}>
-          <Text style={styles.roleText_Signupform}>Buyer</Text>
-        </TouchableOpacity>
-      </View> */}
 
       <Picker
         value={formState.country}
@@ -319,13 +301,13 @@ const SellerRegister = () => {
   );
 
   return isScrollable ? (
-    <ScrollView
-      contentContainerStyle={{flexGrow: 1, backgroundColor: colors.primary}} // Apply background color here
+    <ScrollView 
+      contentContainerStyle={{flexGrow: 1, backgroundColor: colors.primary}}// Apply background color here
     >
       {Content}
     </ScrollView>
   ) : (
-    <MainContainer style={{backgroundColor: colors.primary}}>
+    <MainContainer style={{backgroundColor: colors.primary}} >
       {Content}
     </MainContainer>
   );

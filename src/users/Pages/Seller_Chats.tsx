@@ -13,7 +13,10 @@ import {
 
 import FontAwesome from 'react-native-vector-icons/FontAwesome5';
 import {colors} from '../../components/colors';
-import {handleAttachment} from '../../fileAttachmentUtils';
+import {
+  handleAttachment,
+  handleMicrophonePress,
+} from '../../fileAttachmentUtils';
 import useResponsive from '../../hooks/useResponsive';
 import DynamicStyles from '../../styles/DynamicStyles';
 
@@ -198,7 +201,7 @@ const ChatPage = ({navigation}: ChatPageProps) => {
               </TouchableOpacity>
 
               <TouchableOpacity
-                onPress={handleAttachment}
+                onPress={() => handleMicrophonePress(setMessages, messages)} // Call the handleMicrophonePress function
                 style={{marginHorizontal: 10}}>
                 <FontAwesome
                   name="microphone"

@@ -1,85 +1,76 @@
 import React, {FunctionComponent, ReactNode, useEffect, useState} from 'react';
 import {
   Dimensions,
-  Image,
   StatusBar,
   StyleSheet,
+  Text,
   View,
   ViewStyle,
 } from 'react-native';
+import {colors} from '../../components/colors';
 
 interface MainContainerProps {
   children: ReactNode;
-  showLogo?: boolean;
+  title?: string; // Title for the current screen
   style?: ViewStyle;
 }
 
-// Function to ensure fontSize is always positive and above a minimum threshold
+// Function to calculate font size dynamically
 const getFontSize = (value: number, minSize: number = 10): number => {
-  const fontSize = Math.max(value, minSize); // Ensure fontSize is at least minSize (default is 10)
-  if (fontSize <= 0) {
-    throw new Error('Font size calculation resulted in an invalid value.');
-  }
+  const fontSize = Math.max(value, minSize);
   return fontSize;
 };
 
 const MainContainer: FunctionComponent<MainContainerProps> = props => {
-  const [isPortrait, setIsPortrait] = useState<boolean>(true);
+  const [screenDimensions, setScreenDimensions] = useState(
+    Dimensions.get('window'),
+  );
 
-  // Function to handle orientation change
-  const updateOrientation = () => {
-    const {width, height} = Dimensions.get('window');
-    setIsPortrait(height > width);
+  // Update dimensions on screen size change
+  const updateDimensions = () => {
+    setScreenDimensions(Dimensions.get('window'));
   };
 
   useEffect(() => {
-    updateOrientation(); // Set initial orientation on load
-
     const subscription = Dimensions.addEventListener(
       'change',
-      updateOrientation,
+      updateDimensions,
     );
-
     return () => {
       subscription?.remove();
     };
   }, []);
 
-  // Try-catch block to safely calculate fontSize and handle errors
-  let calculatedFontSize: number = 0;
-  try {
-    calculatedFontSize = getFontSize(
-      isPortrait
-        ? Dimensions.get('window').height * 0.02
-        : Dimensions.get('window').height * 0.04,
-    );
-  } catch (error) {
-    console.error('Error in fontSize calculation:', error);
-    calculatedFontSize = 12; // Fallback to a default value if error occurs
-  }
+  // Calculate font size based on screen size
+  const calculatedFontSize = getFontSize(screenDimensions.width * 0.05, 12);
 
-  // Styles that adjust based on orientation
+  // Styles for responsive layout
   const styles = StyleSheet.create({
     mainContainer: {
       flex: 1,
       backgroundColor: '#1c368a',
       alignItems: 'center',
       justifyContent: 'center',
-      padding: isPortrait ? '1%' : '10%',
+    },
+    header: {
       width: '100%',
-      height: isPortrait ? '100%' : '20%',
+      backgroundColor: colors.secondary,
+      paddingVertical: screenDimensions.height * 0.0001, // Keep this if needed
+      paddingHorizontal: 0, // Remove the padding to ensure it starts from the edge
+      alignItems: 'flex-start', // Align items to the start (left side)
+      justifyContent: 'center',
     },
-    logo_main: {
-      width: isPortrait ? '40%' : '30%',
-      height: isPortrait ? '50%' : '30%',
-      resizeMode: 'contain',
-      marginBottom: isPortrait ? 10 : 30,
-    },
-    text: {
+    headerText: {
       color: 'white',
-      fontSize: calculatedFontSize, // Use calculated fontSize
+      fontSize: calculatedFontSize,
       fontWeight: 'bold',
-      marginTop: 20,
+      textAlign: 'center',
+    },
+    contentContainer: {
+      flex: 1,
+      width: '100%',
+      alignItems: 'center',
+      justifyContent: 'center',
     },
   });
 
@@ -87,15 +78,15 @@ const MainContainer: FunctionComponent<MainContainerProps> = props => {
     <View style={styles.mainContainer}>
       <StatusBar backgroundColor="#1c368a" barStyle="light-content" />
 
-      {/* Conditionally render the logo */}
-      {props.showLogo && (
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={styles.logo_main}
-        />
+      {/* Header Section */}
+      {props.title && (
+        <View style={styles.header}>
+          <Text style={styles.headerText}>{props.title}</Text>
+        </View>
       )}
 
-      {props.children}
+      {/* Content Section */}
+      <View style={styles.contentContainer}>{props.children}</View>
     </View>
   );
 };

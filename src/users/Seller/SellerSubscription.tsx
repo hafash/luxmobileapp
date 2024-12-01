@@ -48,7 +48,7 @@ const SellerSubscription = () => {
         {/* Notification Icon */}
         <TouchableOpacity
           style={styles.navIconContainer}
-          onPress={() => navigation.navigate('advertise')}>
+          onPress={() => navigation.navigate('advertised')}>
           <FontAwesome5 name="bullhorn" size={sizes.iconSize} color="#ffffff" />
         </TouchableOpacity>
 

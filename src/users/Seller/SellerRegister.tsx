@@ -119,15 +119,15 @@ const SellerRegister = () => {
       width: dimensions.width * 0.85,
       justifyContent: 'flex-start', // Keeps the content aligned from the top
       padding: dimensions.width * 0.05,
-      marginTop: dimensions.height * 0.1, // Moves the form 40% down from the top
+      // marginTop: dimensions.height * 0, // Moves the form 40% down from the top
       marginBottom: dimensions.height * 0.1,
     },
 
     input_Signupform: {
-      fontSize: 18,
+      fontSize: 13,
       borderBottomColor: colors.lightGray,
-      borderBottomWidth: 1.2,
-      marginBottom: 5,
+      borderBottomWidth: 0.5,
+      // marginBottom: 5,
       color: colors.white,
     },
     checkboxContainer_Signupform: {

@@ -1,9 +1,13 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import React, {useEffect, useState} from 'react';
-import {Dimensions, Image, StatusBar, StyleSheet, View} from 'react-native';
+import {Image, StatusBar, StyleSheet, View} from 'react-native';
 import ErrorBoundary from '../../ErrorBoundary';
-import {RootStackParamList} from '../components/navigation';
+import {HeaderLogo} from '../navigation/HeaderLogo';
+import {useResponsiveDimensions} from '../utils/screen';
+import {RootStackParamList} from './types';
+
+// Import all screens
 import CodeConfirmationForSeller from '../screens/CodeConfirmationForSeller';
 import ForgotPasswordScreen from '../screens/ForgotPasswordScreen';
 import HomeScreen from '../screens/HomeScreeen';
@@ -39,31 +43,14 @@ import SellerRegister from '../users/Seller/SellerRegister';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
-// Function to get logo size
-const getLogoSize = () => {
-  const width = Dimensions.get('window').width * 0.07; // 40% of screen width
-  const height = Dimensions.get('window').height * 0.07; // 40% of screen height
-  return {width, height};
-};
-
-// Component for logo to avoid redefinition inside render
-const HeaderLogo: React.FC = () => {
-  const {width, height} = getLogoSize();
-  return (
-    <Image
-      source={require('../assets/images/for_start.png')}
-      style={{width, height, resizeMode: 'contain'}}
-    />
-  );
-};
-
 const AppNavigator: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
+  const {width, height} = useResponsiveDimensions();
 
   useEffect(() => {
     setTimeout(() => {
       setIsLoading(false);
-    }, 4000); // Simulate a loading time of 4 seconds
+    }, 2000);
 
     StatusBar.setBarStyle('light-content');
     StatusBar.setBackgroundColor('#1c368a');
@@ -79,8 +66,8 @@ const AppNavigator: React.FC = () => {
     return (
       <View style={styles.loadingContainer}>
         <Image
-          source={require('../assets/images/LuxLogo.png')}
-          style={styles.logo}
+          source={require('../assets/images/for_start.png')}
+          style={[styles.logo, {width: width * 0.4, height: height * 0.4}]}
         />
       </View>
     );
@@ -91,15 +78,15 @@ const AppNavigator: React.FC = () => {
       <NavigationContainer>
         <Stack.Navigator
           initialRouteName="Home"
-          screenOptions={{
-            headerShown: true, // Show the header for all screens
+          screenOptions={() => ({
+            headerShown: true,
             headerStyle: {
-              backgroundColor: '#1c368a', // Set header background color to match the page
+              backgroundColor: '#1c368a',
             },
-            headerTintColor: 'white', // Set the back arrow and header title color to white
-            headerBackTitleVisible: false, // Hide the back title text
-            headerRight: () => <HeaderLogo />, // Use HeaderLogo component for the header right side
-          }}>
+            headerTintColor: 'white',
+            headerBackTitleVisible: false,
+            headerRight: () => <HeaderLogo />,
+          })}>
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="SellerRegister" component={SellerRegister} />
           <Stack.Screen name="BuyerRegister" component={BuyerRegister} />
@@ -175,18 +162,15 @@ const AppNavigator: React.FC = () => {
   );
 };
 
-// Define styles object
 const styles = StyleSheet.create({
   loadingContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20, // Add padding for better responsiveness
+    padding: 20,
   },
   logo: {
-    width: Dimensions.get('window').width * 0.4, // 40% of screen width
-    height: Dimensions.get('window').height * 0.4, // 40% of screen height
-    resizeMode: 'contain', // Ensures the logo maintains aspect ratio
+    resizeMode: 'contain',
   },
 });
 

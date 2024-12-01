@@ -4,8 +4,8 @@ import React, {useEffect, useState} from 'react';
 import {TouchableOpacity, View} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {colors} from '../../components/colors';
-import {RootStackParamList} from '../../components/navigation'; // Ensure this imports the correct file
 import useResponsive from '../../hooks/useResponsive';
+import {RootStackParamList} from '../../navigation/types'; // Ensure this imports the correct file
 import DynamicStyles from '../../styles/DynamicStyles';
 
 const BottomNavBar = () => {
@@ -37,7 +37,7 @@ const BottomNavBar = () => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => handleNavigate('advertise')}>
+      <TouchableOpacity onPress={() => handleNavigate('advertised')}>
         <FontAwesome5
           name="bullhorn"
           size={24}
@@ -45,7 +45,7 @@ const BottomNavBar = () => {
         />
       </TouchableOpacity>
 
-      <TouchableOpacity onPress={() => handleNavigate('notifications')}>
+      <TouchableOpacity>
         <FontAwesome5
           name="bell"
           size={24}

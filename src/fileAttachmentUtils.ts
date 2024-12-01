@@ -1,9 +1,14 @@
 // fileAttachmentUtils.ts
 import {Alert} from 'react-native';
+import AudioRecorderPlayer from 'react-native-audio-recorder-player'; // Import the library
 import DocumentPicker from 'react-native-document-picker';
 import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
+import {PERMISSIONS, request, RESULTS} from 'react-native-permissions'; // Import permission handling
 
-// Define a function to handle file attachment
+// Initialize the recorder player
+const audioRecorderPlayer = new AudioRecorderPlayer();
+
+// Function to handle file attachment (image, document, etc.)
 export const handleAttachment = async () => {
   Alert.alert(
     'Attach File',
@@ -12,7 +17,7 @@ export const handleAttachment = async () => {
       {
         text: 'Take a Picture',
         onPress: async () => {
-          // Updated to include the callback
+          // Launch camera to take a photo
           launchCamera({mediaType: 'photo'}, response => {
             if (response.didCancel) {
               console.log('User cancelled camera picker');
@@ -20,7 +25,6 @@ export const handleAttachment = async () => {
               console.log('Camera Error: ', response.errorMessage);
             } else if (response.assets) {
               console.log('Camera Result:', response.assets[0]);
-              // You can store the result or perform any action
             }
           });
         },
@@ -28,7 +32,7 @@ export const handleAttachment = async () => {
       {
         text: 'Select from Gallery',
         onPress: async () => {
-          // Updated to include the callback
+          // Launch gallery to pick an image
           launchImageLibrary({mediaType: 'photo'}, response => {
             if (response.didCancel) {
               console.log('User cancelled image picker');
@@ -36,7 +40,6 @@ export const handleAttachment = async () => {
               console.log('Image Picker Error: ', response.errorMessage);
             } else if (response.assets) {
               console.log('Gallery Result:', response.assets[0]);
-              // You can store the result or perform any action
             }
           });
         },
@@ -49,7 +52,6 @@ export const handleAttachment = async () => {
               type: [DocumentPicker.types.allFiles],
             });
             console.log('Document Result:', result);
-            // You can store the result or perform any action
           } catch (err) {
             if (DocumentPicker.isCancel(err)) {
               console.log('User canceled document picker');
@@ -65,34 +67,50 @@ export const handleAttachment = async () => {
   );
 };
 
-// // Function to handle microphone press (record audio)
-// export const handleMicrophonePress = async () => {
-//   const {status} = await Audio.requestPermissionsAsync();
-//   if (status === 'granted') {
-//     // Prepare audio recording
-//     const recording = new Audio.Recording();
-//     try {
-//       await recording.prepareToRecordAsync(
-//         Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY,
-//       );
-//       await recording.startAsync();
-//       Alert.alert('Recording started, tap again to stop.');
+// Function to handle microphone press (record audio)
+// Function to handle microphone press (record audio)
+export const handleMicrophonePress = async (
+  setMessages: any,
+  messages: any,
+) => {
+  try {
+    console.log(PERMISSIONS.ANDROID.MICROPHONE); // Check if this is correct
+    // Request microphone permission
+    const permissionStatus = await request(PERMISSIONS.ANDROID.MICROPHONE); // For Android
+    // If you want to support iOS, use PERMISSIONS.IOS.MICROPHONE
 
-//       // Stop recording after a specified duration or allow user to stop manually
-//       setTimeout(async () => {
-//         await recording.stopAndUnloadAsync();
-//         const uri = recording.getURI(); // Get the URI of the recorded audio
-//         const newMessage: Message = {
-//           id: (messages.length + 3).toString(),
-//           type: 'sent',
-//           text: `Audio message sent: ${uri}`, // You might want to handle audio files differently
-//           time: new Date().toLocaleTimeString().slice(0, 5),
-//         };
-//         setMessages([...messages, newMessage]);
-//       }, 5000); // Automatically stop after 5 seconds for demo; adjust as needed
-//     } catch (error) {
-//       console.error('Error recording audio:', error);
-//     }
-//   } else {
-//     Alert.alert('Permission to access microphone is required!');
-//   }
+    if (permissionStatus === RESULTS.GRANTED) {
+      // Start recording when microphone icon is pressed
+      const path = 'audioMessage.m4a'; // Set the path for saving the recording
+      const startTime = await audioRecorderPlayer.startRecorder(path);
+      console.log('Recording started at', startTime);
+
+      // Show alert to inform the user
+      Alert.alert('Recording started', 'Tap again to stop recording.');
+
+      // Optionally, you can use a timeout to stop the recording after a set duration
+      setTimeout(async () => {
+        const stopTime = await audioRecorderPlayer.stopRecorder();
+        console.log('Recording stopped at', stopTime);
+
+        // Use the path where you saved the file for the URI
+        const audioUri = path; // Since we are saving it to 'audioMessage.m4a', we use this path directly
+
+        // Create a new message object with the audio file URI
+        const newMessage = {
+          id: (messages.length + 1).toString(),
+          type: 'sent',
+          text: 'Audio message sent',
+          time: new Date().toLocaleTimeString().slice(0, 5),
+          audioUri, // Add the URI of the recorded audio
+        };
+        setMessages([...messages, newMessage]); // Add new message to state
+      }, 5000); // Auto stop after 5 seconds for demo (adjust as needed)
+    } else {
+      Alert.alert('Permission denied', 'Microphone permission is required.');
+    }
+  } catch (error) {
+    console.error('Error recording audio:', error);
+    Alert.alert('Error', 'An error occurred while recording the audio.');
+  }
+};

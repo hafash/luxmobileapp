@@ -592,17 +592,19 @@ const DynamicStyles = (
       flexDirection: 'row',
       alignItems: 'center',
       justifyContent: 'space-between',
-      marginBottom: isPortrait ? 20 : 25,
-      height: isPortrait ? 40 : 20,
+      marginBottom: isPortrait ? 10 : 25,
+      height: isPortrait ? 5 : 10,
     },
-    logoContainer: {
-      alignItems: 'center',
-      marginRight: isPortrait ? '40%' : '20%',
-    },
+    // logoContainer: {
+    //   alignItems: 'center',
+    //   marginRight: isPortrait ? '40%' : '20%',
+    // },
     title: {
       fontSize: isPortrait ? 20 : 14,
       fontWeight: 'bold',
-      color: '#94daff',
+      color: colors.default,
+      alignItems: 'center',
+      marginRight: isPortrait ? '50%' : '50%',
       marginTop: 2,
     },
     form: {
@@ -631,16 +633,18 @@ const DynamicStyles = (
       borderRadius: 10,
     },
     attachmentContainer: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      alignItems: 'center',
+      flexDirection: 'row', // Arrange buttons in a row
+      justifyContent: 'space-between', // Distribute space between buttons
+      alignItems: 'center', // Vertically align buttons
       marginBottom: isPortrait ? 1 : 20,
+      width: '100%', // Ensure it takes up the full width
     },
     attachmentButton: {
       flexDirection: 'row',
       alignItems: 'center',
       padding: 10,
       borderRadius: 5,
+      marginRight: isPortrait ? 10 : 20, // Add right margin to space between buttons
     },
     attachmentButtonText: {
       color: '#4a4545',
@@ -655,7 +659,7 @@ const DynamicStyles = (
       borderRadius: 5,
       marginTop: 10,
       padding: 10,
-      width: '30%',
+      width: '30%', // Ensure send button doesn't take up too much width
     },
     sendButtonText: {
       color: '#fff',
@@ -685,6 +689,7 @@ const DynamicStyles = (
       fontSize: 16,
       color: 'black',
     },
+
     //ProductsPage.tsx
 
     container_for_product_page: {

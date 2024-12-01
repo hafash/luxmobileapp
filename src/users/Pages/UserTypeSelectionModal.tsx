@@ -24,7 +24,7 @@ const UserTypeSelectionModal = () => {
   };
 
   return (
-    <MainContainer showLogo={true}>
+    <MainContainer>
       <View style={styles.container}>
         {/* The Modal */}
         <Modal

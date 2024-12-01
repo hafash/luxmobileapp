@@ -1,6 +1,7 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useEffect, useState} from 'react';
 import {
+  Dimensions,
   StatusBar,
   StyleSheet,
   Text,
@@ -10,58 +11,55 @@ import {
 import RegularButton from '../components/Buttons/RegularButton';
 import MainContainer from '../components/container/MainContainer';
 
-/**
- * Home component allows users to select a role (Seller or Buyer)
- * and navigate to the respective registration page.
- */
 const Home: React.FC = () => {
-  // State management for selected role and dropdown visibility
   const [selectedRole, setSelectedRole] = useState<string>('Seller');
   const [dropdownVisible, setDropdownVisible] = useState<boolean>(false);
+  const [screenHeight, setScreenHeight] = useState<number>(
+    Dimensions.get('window').height,
+  );
 
-  // Navigation hook for navigating between screens
   const navigation = useNavigation<NavigationProp<any>>();
 
-  // Set up status bar appearance on component mount
   useEffect(() => {
-    // Set status bar style and appearance
-    StatusBar.setBarStyle('light-content'); // Light content for dark background
-    StatusBar.setBackgroundColor('#1c368a'); // Set background color to black
-    StatusBar.setTranslucent(true); // Makes the status bar blend with the app's background
+    // Update status bar appearance
+    StatusBar.setBarStyle('light-content');
+    StatusBar.setBackgroundColor('#1c368a');
+    StatusBar.setTranslucent(true);
 
-    // Reset status bar styles on cleanup
+    const handleResize = () => {
+      setScreenHeight(Dimensions.get('window').height);
+    };
+
+    const subscription = Dimensions.addEventListener('change', handleResize);
+
     return () => {
       StatusBar.setBarStyle('dark-content');
-      StatusBar.setBackgroundColor('#1c368a'); // Reset to white background on cleanup
+      StatusBar.setBackgroundColor('#1c368a');
+      subscription?.remove();
     };
   }, []);
 
-  // Toggle visibility of the role selection dropdown
   const toggleDropdown = () => setDropdownVisible(!dropdownVisible);
 
-  // Handle role selection and navigation
-  // Handle role selection and navigation
   const handleRoleSelect = (role: string) => {
     setSelectedRole(role);
     setDropdownVisible(false);
 
     if (role === 'Seller') {
-      navigation.navigate('SellerRegister'); // Navigate to RegisterSeller screen
+      navigation.navigate('SellerRegister');
     } else if (role === 'Buyer') {
-      navigation.navigate('BuyerRegister'); // Navigate to RegisterBuyer screen
+      navigation.navigate('BuyerRegister');
     }
   };
 
-  // Dynamic styles based on orientation and screen size
   const defaultSizes = {textSize: 14, iconSize: 20};
-  const styles = DynamicStyles(false, 'small', defaultSizes);
+  const styles = DynamicStyles(false, 'small', defaultSizes, screenHeight);
 
   return (
-    <MainContainer showLogo={true}>
+    <MainContainer>
       <View style={styles.container}>
         <Text style={styles.title}>REGISTER</Text>
 
-        {/* Dropdown for selecting user role */}
         <TouchableOpacity
           style={styles.dropdownHeader}
           onPress={toggleDropdown}>
@@ -69,7 +67,6 @@ const Home: React.FC = () => {
           <Text style={styles.pickerSign}>▼</Text>
         </TouchableOpacity>
 
-        {/* Dropdown content for role selection */}
         {dropdownVisible && (
           <View style={styles.combinedContainer}>
             {['Seller', 'Buyer'].map(role => (
@@ -91,7 +88,6 @@ const Home: React.FC = () => {
           </View>
         )}
 
-        {/* Link to login page */}
         <Text style={styles.haveAccount}>Already have an account?</Text>
         <RegularButton onPress={() => navigation.navigate('Login')}>
           <Text>LOGIN</Text>
@@ -101,18 +97,15 @@ const Home: React.FC = () => {
   );
 };
 
-/**
- * Dynamic styles based on the orientation, screen size, and size preferences.
- * @param {boolean} isPortrait - Device orientation flag
- * @param {string} screenSizeCategory - Screen size category (e.g., 'small', 'large')
- * @param {object} sizes - Size preferences for text and icons
- * @returns {object} - Styles object
- */
 const DynamicStyles = (
   isPortrait: boolean,
   screenSizeCategory: string,
   sizes: any,
+  screenHeight: number,
 ) => {
+  const marginTop = screenHeight * 0.2; // 10% of screen height
+  const marginBottom = screenHeight * 0.05; // 5% of screen height
+
   return StyleSheet.create({
     container: {
       flexGrow: 1,
@@ -120,6 +113,8 @@ const DynamicStyles = (
       justifyContent: 'center',
       paddingHorizontal: isPortrait ? 20 : 40,
       width: isPortrait ? '70%' : '51%',
+      marginTop,
+      marginBottom,
     },
     title: {
       fontSize: sizes.textSize * 2,

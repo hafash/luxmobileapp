@@ -16,7 +16,7 @@ import {RootStackParamList} from '../../components/navigation';
 
 type GetStartedScreenProp = StackNavigationProp<
   RootStackParamList,
-  'AddProduct'
+  'Buyer_Landing_Page'
 >;
 
 const {width, height} = Dimensions.get('window');

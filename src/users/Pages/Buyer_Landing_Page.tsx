@@ -1,10 +1,19 @@
 import {NavigationProp, useNavigation} from '@react-navigation/native';
 import React, {useState} from 'react';
-import {Image, ScrollView, Text, TouchableOpacity, View} from 'react-native';
+import {
+  Dimensions,
+  Image,
+  ScrollView,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 import {colors} from '../../components/colors';
 import {RootStackParamList} from '../../components/navigation';
 import useResponsive from '../../hooks/useResponsive';
+
+const {width: screenWidth, height: screenHeight} = Dimensions.get('window');
 
 const products = [
   {
@@ -32,20 +41,10 @@ export default function PostProduct() {
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  // Define dynamic styling values
-  const logoSize = {
-    width: 150,
-    height: 40,
-  };
-
-  // Ensure the font size is always positive
-  const sectionTitleFontSize = isPortrait ? 18 : 22;
-  const validSectionTitleFontSize =
-    sectionTitleFontSize > 0 ? sectionTitleFontSize : 18; // Ensure font size is positive
-
-  const carouselImageSize = {width: 200, height: 150};
-  const productImageSize = {width: 100, height: 100};
-  const quoteBtnPadding = {paddingVertical: 10, paddingHorizontal: 15};
+  // Ensure baseFontSize is always a valid positive value
+  const baseFontSize = Math.max(screenWidth > 600 ? 18 : 14, 12); // minimum 12px
+  const imageScaleFactor = screenWidth / 375; // Scale images based on a standard width (375px)
+  const buttonSize = screenWidth > 600 ? 70 : 60;
 
   const goToNextImage = () => {
     setCurrentIndex(prevIndex => (prevIndex + 1) % products.length);
@@ -66,151 +65,122 @@ export default function PostProduct() {
       {/* Header */}
       <View
         style={{
-          padding: isPortrait ? 10 : 0.5,
+          paddingVertical: isPortrait ? 10 : 20,
           alignItems: 'center',
-          marginBottom: isPortrait ? 28 : 10,
+          marginBottom: isPortrait ? 20 : 15,
         }}>
-        <Image
-          source={require('../../assets/images/logo.png')}
-          style={{
-            width: logoSize.width,
-            height: logoSize.height,
-            marginTop: isPortrait ? 0.5 : 10,
-          }}
-          resizeMode="contain"
-        />
         <Text
           style={{
             color: '#fff',
-            fontSize: validSectionTitleFontSize, // Use validated font size
+            fontSize: baseFontSize + 4, // Ensure this is always a positive number
             textAlign: 'center',
-            marginBottom: isPortrait ? 20 : 10,
+            fontWeight: 'bold',
           }}>
           Featured Products
         </Text>
       </View>
 
+      {/* Content */}
       <ScrollView style={{flex: 1}}>
-        <View style={{padding: isPortrait ? 20 : 12}}>
+        <View style={{padding: 16}}>
+          {/* Carousel */}
           <View
             style={{
               flexDirection: 'row',
               justifyContent: 'center',
               alignItems: 'center',
-              marginBottom: isPortrait ? 10 : 20,
+              marginBottom: 20,
             }}>
-            <TouchableOpacity
-              style={{padding: isPortrait ? 10 : 15}}
-              onPress={goToPreviousImage}>
-              <Text style={{color: '#f8f8f8', fontSize: isPortrait ? 22 : 28}}>
+            <TouchableOpacity onPress={goToPreviousImage} style={{padding: 10}}>
+              <Text style={{color: '#f8f8f8', fontSize: baseFontSize + 8}}>
                 ❮
               </Text>
             </TouchableOpacity>
 
             <Image
+              source={products[currentIndex].image}
               style={{
-                width: carouselImageSize.width,
-                height: carouselImageSize.height,
-                borderRadius: 10,
+                width: 200 * imageScaleFactor,
+                height: 150 * imageScaleFactor,
+                borderRadius: 12,
                 resizeMode: 'cover',
               }}
-              source={products[currentIndex].image}
             />
 
-            <TouchableOpacity
-              style={{padding: isPortrait ? 10 : 15}}
-              onPress={goToNextImage}>
-              <Text style={{color: '#f8f8f8', fontSize: isPortrait ? 22 : 28}}>
+            <TouchableOpacity onPress={goToNextImage} style={{padding: 10}}>
+              <Text style={{color: '#f8f8f8', fontSize: baseFontSize + 8}}>
                 ❯
               </Text>
             </TouchableOpacity>
           </View>
 
-          <Text
-            style={{
-              color: '#fff',
-              fontSize: isPortrait ? 16 : 18,
-              textAlign: 'center',
-              marginTop: isPortrait ? 10 : 15,
-            }}>
-            {products[currentIndex].title}
-          </Text>
-
-          <View style={{marginBottom: isPortrait ? 20 : 30}}>
-            {products.map((product, index) => (
-              <View
-                key={index}
+          {/* Product List */}
+          {products.map((product, index) => (
+            <View
+              key={index}
+              style={{
+                backgroundColor: '#1c368a',
+                padding: 16,
+                marginBottom: 12,
+                borderRadius: 12,
+                flexDirection: 'row',
+                alignItems: 'center',
+              }}>
+              <Image
+                source={product.image}
                 style={{
-                  backgroundColor: '#1c368a',
-                  padding: isPortrait ? 15 : 20,
-                  marginVertical: isPortrait ? 10 : 15,
-                  borderRadius: 10,
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                }}>
-                <Image
+                  width: 80 * imageScaleFactor,
+                  height: 80 * imageScaleFactor,
+                  marginRight: 12,
+                  borderRadius: 8,
+                }}
+              />
+              <View style={{flex: 1}}>
+                <Text
                   style={{
-                    width: productImageSize.width,
-                    height: productImageSize.height,
-                    marginRight: 20,
-                    borderRadius: 10,
-                  }}
-                  source={product.image}
-                />
-                <View style={{flex: 1}}>
-                  <Text
-                    style={{
-                      color: '#94daff',
-                      fontSize: isPortrait ? 14 : 16,
-                      fontWeight: 'bold',
-                      marginBottom: isPortrait ? 5 : 8,
-                    }}>
-                    {product.title}
-                  </Text>
+                    color: '#94daff',
+                    fontSize: baseFontSize + 2,
+                    fontWeight: 'bold',
+                  }}>
+                  {product.title}
+                </Text>
+                <Text style={{color: '#fff', marginVertical: 8}}>
+                  {product.description}
+                </Text>
+                <TouchableOpacity
+                  onPress={() => navigation.navigate('Inquiry')}
+                  style={{
+                    backgroundColor: '#94daff',
+                    paddingVertical: 8,
+                    paddingHorizontal: 12,
+                    borderRadius: 8,
+                  }}>
                   <Text
                     style={{
                       color: '#fff',
-                      marginBottom: isPortrait ? 10 : 15,
+                      fontSize: baseFontSize,
+                      textAlign: 'center',
                     }}>
-                    {product.description}
+                    Request Quote
                   </Text>
-                  <TouchableOpacity
-                    onPress={() => navigation.navigate('Inquiry')}
-                    style={{
-                      backgroundColor: '#94daff',
-                      paddingVertical: quoteBtnPadding.paddingVertical,
-                      paddingHorizontal: quoteBtnPadding.paddingHorizontal,
-                      borderRadius: 5,
-                    }}>
-                    <Text
-                      style={{
-                        color: '#fff',
-                        fontSize: isPortrait ? 12 : 14,
-                        textAlign: 'center',
-                      }}>
-                      Request Quote
-                    </Text>
-                  </TouchableOpacity>
-                </View>
+                </TouchableOpacity>
               </View>
-            ))}
-          </View>
+            </View>
+          ))}
         </View>
       </ScrollView>
 
+      {/* Footer */}
       <View
         style={{
           flexDirection: 'row',
           justifyContent: 'space-around',
           alignItems: 'center',
           backgroundColor: '#94daff',
-          height: isPortrait ? 60 : 50,
-          paddingBottom: isPortrait ? 10 : 15,
-          borderTopLeftRadius: 20,
-          borderTopRightRadius: 20,
-          position: 'absolute',
-          bottom: 0.5,
-          width: '100%',
+          height: buttonSize,
+          paddingVertical: 8,
+          borderTopLeftRadius: 16,
+          borderTopRightRadius: 16,
         }}>
         <TouchableOpacity onPress={() => navigation.navigate('Buyer_Messages')}>
           <FontAwesome5 name="comment" size={24} color={colors.active} />
@@ -221,12 +191,9 @@ export default function PostProduct() {
         </TouchableOpacity>
 
         <TouchableOpacity onPress={() => navigation.navigate('Inquirers')}>
-          <FontAwesome5
-            name="user"
-            size={sizes.iconSize > 0 ? sizes.iconSize : 16}
-            color="#ffffff"
-          />
+          <FontAwesome5 name="user" size={sizes.iconSize || 24} color="#fff" />
         </TouchableOpacity>
+
         <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
           <FontAwesome5 name="cog" size={24} color={colors.active} />
         </TouchableOpacity>
@@ -234,33 +201,28 @@ export default function PostProduct() {
         <View
           style={{
             position: 'absolute',
-            width: isPortrait ? 60 : 60,
-            height: isPortrait ? 60 : 60,
-            borderRadius: 25,
+            width: buttonSize,
+            height: buttonSize,
+            borderRadius: buttonSize / 2,
             justifyContent: 'center',
             alignItems: 'center',
-            bottom: isPortrait ? 20 : 10,
-            left: '50%',
-            transform: [{translateX: -30}],
+            bottom: buttonSize / 100,
+            left: '50.6%',
+            
+            transform: [{translateX: -buttonSize / 2}],
             backgroundColor: '#1c368a',
           }}>
           <TouchableOpacity
+            onPress={handleNavigateToNewInquiry}
             style={{
               width: '80%',
               height: '80%',
               justifyContent: 'center',
               alignItems: 'center',
               backgroundColor: '#94daff',
-              borderRadius: 25,
-            }}
-            onPress={handleNavigateToNewInquiry}>
-            <Text
-              style={{
-                color: '#ffffff',
-                fontSize: isPortrait ? 30 : 30,
-              }}>
-              +
-            </Text>
+              borderRadius: buttonSize / 2,
+            }}>
+            <Text style={{color: '#fff', fontSize: baseFontSize + 20}}>+</Text>
           </TouchableOpacity>
         </View>
       </View>
